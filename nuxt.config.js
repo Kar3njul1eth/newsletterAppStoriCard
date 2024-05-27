@@ -8,7 +8,7 @@ export default {
 
   server: {
     port: process.env.PORT || 3000,
-    host: 'localhost'
+    host: '0.0.0.0' // Cambiado a 0.0.0.0 para ser accesible externamente
   },
   head: {
     titleTemplate: '%s - newsletter-app-storicard',
