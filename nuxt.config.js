@@ -6,6 +6,10 @@ dotenv.config();
 export default {
   ssr: false,
 
+  server: {
+    port: process.env.PORT || 3000,
+    host: '0.0.0.0'
+  },
   head: {
     titleTemplate: '%s - newsletter-app-storicard',
     title: 'newsletter-app-storicard',
