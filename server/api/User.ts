@@ -1,39 +1,35 @@
 import { Router } from 'express';
-import { AppDataSource } from '../../ormconfig';
-import { User } from '../models/User';
+import { readData, writeData } from '../jsonHandler';
 
 const router = Router();
 
-router.get('/test-db', async (req, res) => {
-  try {
-    const users = await AppDataSource.getRepository(User).find();
-    res.json({ success: true, users });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Database connection failed', error });
-  }
-});
+router.get('/unsubscribe', (req, res) => {
+  const data = readData();
+  const email = req.query.email as string;
 
-router.get('/', async (req, res) => {
-  const users = await AppDataSource.getRepository(User).find();
-  res.json(users);
-});
-
-router.post('/', async (req, res) => {
-  const user = new User();
-  user.email = req.body.email;
-  await AppDataSource.getRepository(User).save(user);
-  res.json(user);
-});
-
-router.post('/unsubscribe', async (req, res) => {
-  const user = await AppDataSource.getRepository(User).findOneBy({ email: req.body.email });
+  const user = data.users.find(u => u.email === email);
   if (user) {
-    user.subscribed = false;
-    await AppDataSource.getRepository(User).save(user);
-    res.json({ message: 'Unsubscribed successfully' });
+    user.newsletterStatus = 'Unsubscribed';
+    writeData(data);
+    res.send('You have successfully unsubscribed.');
   } else {
-    res.status(404).json({ message: 'User not found' });
+    res.status(404).send('User not found.');
   }
+});
+
+router.get('/', (req, res) => {
+  const data = readData();
+  res.json(data.users);
+});
+
+router.post('/', (req, res) => {
+  const data = readData();
+  const newUser = req.body;
+  newUser.id = data.users.length + 1;
+  newUser.newsletterStatus = 'Subscribed';
+  data.users.push(newUser);
+  writeData(data);
+  res.json(newUser);
 });
 
 export default router;

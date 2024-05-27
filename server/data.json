@@ -1,0 +1,17 @@
+{
+  "users": [
+    {
+      "name": "Karen",
+      "email": "karenrjrl1514@gmail.com",
+      "id": 1,
+      "newsletterStatus": "Subscribed"
+    },
+    {
+      "name": "karen",
+      "email": "kjrodriguezl1302@gmail.com",
+      "id": 2,
+      "newsletterStatus": "Subscribed"
+    }
+  ],
+  "newsletters": []
+}

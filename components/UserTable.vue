@@ -1,64 +1,58 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="users"
-    :items-per-page="5"
-    class="elevation-1"
-  >
-    <template v-slot:top>
-      <v-toolbar flat>
-        <v-toolbar-title>Users</v-toolbar-title>
-        <v-divider class="mx-4" inset vertical></v-divider>
-        <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Add User</v-btn>
+  <v-container>
+    <v-row>
+      <v-col cols="12" md="6">
+        <v-card>
+          <v-card-text>
+            <v-form ref="form" @submit.prevent="onSubmit">
+              <v-text-field v-model="form.name" label="Name" required></v-text-field>
+              <v-text-field v-model="form.email" label="Email" required></v-text-field>
+              <v-btn type="submit" :loading="isLoading" color="primary">Subscribe</v-btn>
+            </v-form>
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <v-col cols="12" md="6">
+        <v-data-table :headers="headers" :items="users" class="elevation-1">
+          <template v-slot:[`item.newsletterStatus`]="{ item }">
+            <span :class="statusClass(item.newsletterStatus)">{{ item.newsletterStatus }}</span>
           </template>
-          <v-card>
-            <v-card-title>
-              <span class="headline">Add User</span>
-            </v-card-title>
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12">
-                    <v-text-field v-model="newUser.email" label="Email"></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="dialog = false">Cancel</v-btn>
-              <v-btn color="blue darken-1" text @click="addUser">Save</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-toolbar>
-    </template>
-    <template v-slot:item="{ item }">
-      <v-icon small class="mr-2" @click="editUser(item)">mdi-pencil</v-icon>
-      <v-icon small @click="deleteUser(item)">mdi-delete</v-icon>
-    </template>
-  </v-data-table>
+        </v-data-table>
+      </v-col>
+    </v-row>
+
+    <v-dialog v-model="showSuccessModal" max-width="500">
+      <v-card>
+        <v-card-title class="headline">Subscription Successful</v-card-title>
+        <v-card-text>
+          You have successfully subscribed!
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green darken-1" text @click="showSuccessModal = false">OK</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-container>
 </template>
 
 <script>
 export default {
   data() {
     return {
-      dialog: false,
+      form: {
+        name: '',
+        email: ''
+      },
+      isLoading: false,
+      showSuccessModal: false,
       headers: [
         { text: 'ID', value: 'id' },
+        { text: 'Name', value: 'name' },
         { text: 'Email', value: 'email' },
-        { text: 'Subscribed', value: 'subscribed' },
-        { text: 'Actions', value: 'actions', sortable: false },
+        { text: 'Newsletter Status', value: 'newsletterStatus' },
       ],
-      users: [],
-      newUser: {
-        email: '',
-        subscribed: true
-      }
+      users: []
     }
   },
   async created() {
@@ -67,35 +61,45 @@ export default {
   methods: {
     async fetchUsers() {
       try {
-        const response = await this.$axios.get('/users')
-        this.users = response.data
+        const response = await this.$axios.get('/users');
+        if (Array.isArray(response.data)) {
+          this.users = response.data;
+        } else {
+          console.error('Response data is not an array:', response.data);
+        }
       } catch (error) {
-        console.error('Error fetching users:', error)
+        console.error('Error fetching users:', error);
       }
     },
-    async addUser() {
+    async onSubmit() {
+      this.isLoading = true;
       try {
-        const response = await this.$axios.post('/users', this.newUser)
-        this.users.push(response.data)
-        this.dialog = false
-        this.newUser.email = ''
+        const response = await this.$axios.post('/users', this.form);
+        this.$refs.form.reset();
+        this.users.push(response.data);
+        this.showSuccessModal = true;
       } catch (error) {
-        console.error('Error adding user:', error)
+        console.error('Error adding user:', error);
+        this.$toast.error('Failed to add user');
+      } finally {
+        this.isLoading = false;
       }
     },
-    editUser(user) {
-      console.log('Edit user:', user)},
-    async deleteUser(user) {
-      try {
-        await this.$axios.delete(`/users/${user.id}`)
-        this.users = this.users.filter(u => u.id !== user.id)
-      } catch (error) {
-        console.error('Error deleting user:', error)
-      }
+    statusClass(status) {
+      return {
+        'text-green-500': status === 'Subscribed',
+        'text-red-500': status === 'Unsubscribed'
+      };
     }
   }
-}
+};
 </script>
 
 <style scoped>
+.text-green-500 {
+  color: green;
+}
+.text-red-500 {
+  color: red;
+}
 </style>

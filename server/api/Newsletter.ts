@@ -1,59 +1,42 @@
 import { Router } from 'express';
-import { AppDataSource } from '../../ormconfig';
-import { Newsletter } from '../models/Newsletter';
-import { User } from '../models/User';
-import nodemailer from 'nodemailer';
-import { getTemplate } from './template';
+import { readData } from '../jsonHandler';
+import { Resend } from 'resend';
 
 const router = Router();
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
-  auth: {
-    user: process.env.SMTP_EMAIL,
-    pass: process.env.SMTP_PASSWORD,
-  },
-});
+// Configurar globalThis.fetch y globalThis.Headers para node-fetch
+(globalThis as any).fetch = fetch;
+(globalThis as any).Headers = Headers;
 
-const isValidPayload = (payload: Newsletter) => {
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+const isValidPayload = (payload: any) => {
   return payload.subject && payload.content && payload.callToActionLabel && payload.callToActionLink;
 };
 
 router.post('/send', async (req, res) => {
-  const formData = req.body;
-  const payload = formData as Newsletter;
-  const file = req.files?.file;
+  const data = readData();
+  const payload = req.body;
 
   if (!isValidPayload(payload)) {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
-  if (!file || Array.isArray(file)) {
-    return res.status(400).json({ message: "Invalid file upload" });
-  }
-
-  const users = await AppDataSource.getRepository(User).find({
-    where: { subscribed: true },
-  });
-
-  const emailFrom = process.env.SMTP_EMAIL || "";
-  const nameFrom = emailFrom.split("@")[0];
-  const attachments: { filename: string, content: Buffer }[] = [];
-
-  if (file) {
-    const buffer = Buffer.from(file.data);
-    attachments.push({ filename: file.name, content: buffer });
-  }
+  const users = data.users.filter(user => user.newsletterStatus === 'Subscribed');
 
   const emailsToSend = users.map(user =>
-    transporter.sendMail({
-      attachments,
-      from: `"${nameFrom}" <${emailFrom}>`,
-      to: user.email,
+    resend.emails.send({
+      from: process.env.SMTP_EMAIL || 'Acme <newslettertecnology@gmail.com>',
+      to: [user.email],
       subject: payload.subject,
-      html: getTemplate(payload, user),
+      html: `
+        <div>
+          <h1>${payload.subject}</h1>
+          <p>${payload.content}</p>
+          <a href="${payload.callToActionLink}">${payload.callToActionLabel}</a>
+          <p><a href="${process.env.BASE_URL}/api/users/unsubscribe?email=${user.email}">Unsubscribe</a></p>
+        </div>
+      `
     })
   );
 

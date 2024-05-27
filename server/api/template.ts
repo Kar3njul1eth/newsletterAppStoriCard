@@ -1,5 +1,15 @@
-import { Newsletter } from '../models/Newsletter';
-import { User } from '../models/User';
+interface Newsletter {
+  subject: string;
+  content: string;
+  callToActionLabel: string;
+  callToActionLink: string;
+}
+
+interface User {
+  id: number;
+  email: string;
+  subscribed: boolean;
+}
 
 export const getTemplate = (newsletter: Newsletter, user: User): string => {
   return `

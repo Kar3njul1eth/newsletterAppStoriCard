@@ -1,21 +1,21 @@
-<template>
-  <v-app>
-    <NavBar />
-    <v-main class="main">
-        <Nuxt />
-    </v-main>
-  </v-app>
-</template>
+  <template>
+    <v-app>
+      <NavBar />
+      <v-main class="main">
+          <Nuxt />
+      </v-main>
+    </v-app>
+  </template>
 
-<script>
+  <script>
 
-export default {
-  name: 'DefaultLayout',
-}
-</script>
+  export default {
+    name: 'DefaultLayout',
+  }
+  </script>
 
-<style>
-.main {
-  background-color: white;
-}
-</style>
+  <style>
+  .main {
+    background-color: white;
+  }
+  </style>
