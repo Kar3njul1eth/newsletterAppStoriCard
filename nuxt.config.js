@@ -29,6 +29,7 @@ export default {
 
   components: true,
 
+  target: 'server',
   buildModules: [
     '@nuxt/typescript-build',
     '@nuxtjs/vuetify',

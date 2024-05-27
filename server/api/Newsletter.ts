@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import { readData } from '../jsonHandler';
 import { Resend } from 'resend';
+import fetch, { Headers } from 'node-fetch';
 
 const router = Router();
 
-// Configurar globalThis.fetch y globalThis.Headers para node-fetch
 (globalThis as any).fetch = fetch;
 (globalThis as any).Headers = Headers;
 
