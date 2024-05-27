@@ -10,7 +10,7 @@ dotenv.config();
 const app = express();
 
 const corsOptions = {
-  origin: '*',
+  origin: 'https://newsletter-app-storicard-9f2153e1b237.herokuapp.com',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   preflightContinue: false,
   optionsSuccessStatus: 204
