@@ -4,10 +4,20 @@
       <v-col cols="12" md="6">
         <v-card>
           <v-card-text>
-            <v-form ref="form" @submit.prevent="onSubmit">
-              <v-text-field v-model="form.name" label="Name" required></v-text-field>
-              <v-text-field v-model="form.email" label="Email" required></v-text-field>
-              <v-btn type="submit" :loading="isLoading" color="primary">Subscribe</v-btn>
+            <v-form ref="form" v-model="valid" @submit.prevent="onSubmit">
+              <v-text-field
+                v-model="form.name"
+                label="Name"
+                required
+                :rules="[v => !!v || 'Name is required']">
+              </v-text-field>
+              <v-text-field
+                v-model="form.email"
+                label="Email"
+                required
+                :rules="[v => !!v || 'Email is required', v => /.+@.+\..+/.test(v) || 'E-mail must be valid']">
+              </v-text-field>
+              <v-btn type="submit" :loading="isLoading" color="primary" :disabled="!valid">Subscribe</v-btn>
             </v-form>
           </v-card-text>
         </v-card>
@@ -46,6 +56,7 @@ export default {
       },
       isLoading: false,
       showSuccessModal: false,
+      valid: false,
       headers: [
         { text: 'ID', value: 'id' },
         { text: 'Name', value: 'name' },
