@@ -44,6 +44,7 @@
     "vuetify": "^2.6.10",
     "webpack": "^4.46.0"
   },
+  "type": "module",
   "devDependencies": {
     "@babel/plugin-transform-flow-strip-types": "^7.24.6",
     "@nuxt/types": "^2.15.8",
