@@ -87,5 +87,10 @@ export default {
   },
   serverMiddleware: [
     { path: '/api', handler: '~/server/index.ts' }
-  ]
+  ],
+  routeRules: {
+    '/examples/*': { redirect: '/redirect-route' },
+    '/modify-headers-route': { headers: { 'x-magic-of': 'nuxt and vercel' } },
+    '/spa': { ssr: false },
+  },
 };
