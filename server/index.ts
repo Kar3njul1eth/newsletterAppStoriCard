@@ -12,7 +12,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/users', userRoutes);
-app.use('/newsletters', newsletterRoutes);
-
+app.use('/api/newsletters', newsletterRoutes);
 
 export default app;

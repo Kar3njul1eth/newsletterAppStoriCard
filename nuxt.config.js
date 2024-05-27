@@ -8,7 +8,7 @@ export default {
 
   server: {
     port: process.env.PORT || 3000,
-    host: '0.0.0.0'
+    host: 'localhost'
   },
   head: {
     titleTemplate: '%s - newsletter-app-storicard',
@@ -45,7 +45,7 @@ export default {
   ],
 
   axios: {
-    baseURL: process.env.BASE_URL || 'http://localhost:3000/api',
+    baseURL: process.env.BASE_URL || 'http://localhost:3000',
   },
 
   vuetify: {

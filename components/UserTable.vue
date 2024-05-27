@@ -61,7 +61,7 @@ export default {
   methods: {
     async fetchUsers() {
       try {
-        const response = await this.$axios.get('/users');
+        const response = await this.$axios.get('/api/users');
         if (Array.isArray(response.data)) {
           this.users = response.data;
         } else {
@@ -74,7 +74,7 @@ export default {
     async onSubmit() {
       this.isLoading = true;
       try {
-        const response = await this.$axios.post('/users', this.form);
+        const response = await this.$axios.post('/api/users', this.form);
         this.$refs.form.reset();
         this.users.push(response.data);
         this.showSuccessModal = true;
