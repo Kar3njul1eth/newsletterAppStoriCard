@@ -1,5 +1,7 @@
 # Newsletter Technology App
 
+https://newsletter-app-storicard-9f2153e1b237.herokuapp.com/
+
 ![App](./assets/newsletterapp.png)
 
 Este proyecto fue construido utilizando Nuxt.js como un framework de full-stack y consiste en una aplicación de newsletter que permite:
@@ -57,6 +59,15 @@ generate static project
 $ yarn generate
 ```
 
+## Importante
+Se recomienda en local dejar la configuracion de origin cors con '*', para que admita todos los origenes y ejecute correctamente.
+
+const corsOptions = {
+  origin: '*',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  preflightContinue: false,
+  optionsSuccessStatus: 204
+};
 ## Información Adicional
 
 Desde Resend se puede administrar el envío de los emails.
