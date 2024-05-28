@@ -9,7 +9,7 @@ Este proyecto fue construido utilizando Nuxt.js como un framework de full-stack 
 - Ver usuarios suscritos
 - Suscribir nuevos usuarios
 - Enviar un newsletter a todos los usuarios con una plantilla HTML predefinida
-- Enviar un newsletter con una foto adjunta
+- Enviar un newsletter con una foto o documento adjunto
 - Cancelar la suscripción de un usuario a través del enlace recibido en el correo
 
 ## Estructura del Proyecto
@@ -23,7 +23,7 @@ La aplicación utiliza Nuxt.js como framework de full-stack, permitiendo crear p
 - Vuetify
 - Axios
 - Resend
-- Vercel (para el despliegue)
+- Heroku (para el despliegue)
 
 ### Estructura del Proyecto
 
@@ -45,7 +45,7 @@ La aplicación utiliza Nuxt.js como framework de full-stack, permitiendo crear p
 ## Build Setup
 
 ```bash
-install dependencies
+install dependencies (node >18)
 $ yarn install
 
 serve with hot reload at localhost:3000
